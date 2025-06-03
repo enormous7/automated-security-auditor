@@ -3,7 +3,39 @@
 import subprocess
 from config import UNNECESSARY_SERVICES
 
-# ... (check_running_services 함수는 그대로 둡니다) ...
+def check_running_services(): # <-- 이 함수가 있는지 확인
+    """
+    Checks for unnecessarily running services.
+    """
+    result = {"name": "Unnecessary Service Check", "status": "PASS", "details": ""}
+    found_unnecessary_services = []
+    try:
+        # Get list of running services using systemctl list-units --type=service --state=running
+        cmd = "systemctl list-units --type=service --state=running --no-pager"
+        output = subprocess.check_output(cmd, shell=True, text=True).strip()
+
+        running_services = []
+        for line in output.split('\n'):
+            parts = line.split()
+            if len(parts) > 0 and parts[0].endswith(".service"):
+                service_name = parts[0].replace(".service", "")
+                running_services.append(service_name)
+
+        for service in UNNECESSARY_SERVICES:
+            if service in running_services:
+                found_unnecessary_services.append(service)
+
+        if found_unnecessary_services:
+            result["status"] = "FAIL"
+            result["details"] = f"The following unnecessary services are running: {', '.join(found_unnecessary_services)}"
+        else:
+            result["details"] = "No unnecessarily running services found."
+
+    except subprocess.CalledProcessError as e:
+        result["details"] = f"Command execution failed: {e.stderr.strip()}"
+    except FileNotFoundError:
+        result["details"] = "systemctl command not found."
+    return result
 
 def check_open_ports():
     """
