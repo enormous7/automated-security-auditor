@@ -20,7 +20,7 @@ EXCLUDE_DIRS = [
 MIN_PASSWORD_LENGTH = 8
 
 # SSH configuration file path (e.g., /etc/ssh/sshd_config)
-SSH_CONFIG_PATH = "/etc/ssh/sshd_config"
+SSH_CONFIG_PATH = "/etc/ssh/ssh_config"
 
 # List of unnecessary services (examples)
 UNNECESSARY_SERVICES = [
