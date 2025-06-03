@@ -44,6 +44,14 @@ def run_all_checks():
         audit_results.append({"name": "OS Support", "status": "ERROR", "details": f"{TARGET_OS} is not currently supported."})
 
     print("\n--- System Security Audit Completed ---")
+    import json
+    print("\n--- DEBUG: Audit Results Before Report Generation ---")
+    for i, res in enumerate(audit_results):
+        print(f"Result {i}: {res}")
+        if not isinstance(res, dict) or 'name' not in res:
+            print(f"  !!! Potentially problematic entry: {res}")
+    print("---------------------------------------------------\n")
+
     return audit_results
 
 if __name__ == "__main__":
